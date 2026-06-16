@@ -1,0 +1,23 @@
+# Virtual Environment
+venv/
+__pycache__/
+*.pyc
+
+# Logs
+logs/*.log
+logs/*.json
+
+# Sensitive configs (optional)
+config/*config*.json
+
+# Model files (large)
+models/*.pth
+models/*.pkl
+
+# Temporary files
+*.tmp
+*.swp
+.DS_Store
+
+# Alerts directory contents
+alerts/*

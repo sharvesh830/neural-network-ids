@@ -1,0 +1,13 @@
+# Custom IP Blacklist
+# Format: one IP per line, # for comments
+
+# Known attacker IPs
+192.168.80.199
+10.0.0.50
+
+# Tor exit nodes (examples)
+185.220.101.1
+185.220.101.2
+
+# Add your own known malicious IPs here
+192.168.80.132
