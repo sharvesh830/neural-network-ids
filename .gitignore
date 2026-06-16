@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Virtual Environment
 venv/
 __pycache__/
@@ -21,3 +22,121 @@ models/*.pkl
 
 # Alerts directory contents
 alerts/*
+=======
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+
+# Virtual Environments
+venv/
+env/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Models
+*.pth
+*.pkl
+
+# Training Data
+data/
+
+# Generated Results
+results/
+logs/
+
+# IDE
+.vscode/
+.idea/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Mac
+.DS_Store
+
+# Temporary
+*.tmp
+temp/
+
+# Build
+build/
+dist/
+*.egg-info/
+# Trained Models
+*.pth
+*.pkl
+
+# Training outputs
+models/final/
+models/training/
+models/export/
+
+# Data
+data/
+
+# Results
+results/
+
+# Logs
+logs/
+>>>>>>> 7fafd15 (Initial Neural IDS training pipeline)
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+
+# Virtual Environments
+venv/
+env/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Training Data
+data/
+
+# Training Outputs
+results/
+logs/
+
+# Model Files
+*.pth
+*.pkl
+
+# Model Directories
+models/final/
+models/training/
+models/export/
+
+# IDE
+.vscode/
+.idea/
+
+# OS Files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary Files
+*.tmp
+*.swp
+temp/
+
+# Sensitive Configs
+config/*config*.json
+*.pth
+*.pkl
+logs/
+config/*config*.json
+data/
+results/
+models/final/
+models/training/
+models/export/

@@ -1,0 +1,71 @@
+# Neural Network IDS Configuration - D: Drive
+project:
+  name: "Neural_IDS_CICIDS2017"
+  version: "1.0"
+  base_path: "D:/IDS_Neural_Project"
+
+data:
+  dataset_name: "CICIDS2017"
+  raw_data_path: "data/raw"
+  processed_data_path: "data/processed"
+  final_dataset: "data/processed/cicids_combined.csv"
+  export_path: "data/export"
+  
+  # Dataset parameters
+  sample_size: 800000
+  test_split: 0.2
+  val_split: 0.1
+  random_state: 42
+
+features:
+  selected_features:
+    - "Flow Duration"
+    - "Total Fwd Packets"
+    - "Total Backward Packets" 
+    - "Total Length of Fwd Packets"
+    - "Total Length of Bwd Packets"
+    - "Fwd Packet Length Max"
+    - "Fwd Packet Length Min"
+    - "Fwd Packet Length Mean"
+    - "Fwd Packet Length Std"
+    - "Bwd Packet Length Max"
+    - "Bwd Packet Length Min"
+    - "Bwd Packet Length Mean"
+    - "Bwd Packet Length Std"
+    - "Flow Bytes/s"
+    - "Flow Packets/s"
+    - "Flow IAT Mean"
+    - "Flow IAT Std"
+    - "Flow IAT Max"
+
+models:
+  classifier:
+    name: "IDSNet"
+    hidden_layers: [128, 64, 32]
+    dropout: 0.3
+    learning_rate: 0.001
+    batch_size: 1024
+    epochs: 50
+    focal_loss_alpha: 0.25
+    focal_loss_gamma: 2.0
+    
+  autoencoder:
+    name: "AnomalyDetector" 
+    encoding_dim: 32
+    hidden_layers: [64, 32]
+    learning_rate: 0.001
+    batch_size: 512
+    epochs: 30
+    contamination: 0.1
+
+training:
+  device: "cuda"
+  early_stopping_patience: 10
+  save_best_model: true
+  log_interval: 100
+
+export:
+  ubuntu_models_path: "models/export/ubuntu_deployment"
+  include_scalers: true
+  include_thresholds: true
+  compress: true
