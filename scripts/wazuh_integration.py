@@ -13,14 +13,14 @@ class WazuhIntegration:
         try:
          self.email_alerter = SmartEmailAlerter()
         except Exception as e:
-         print(f"⚠️ Email alerter initialization failed: {e}")
+         print(f" Email alerter initialization failed: {e}")
          self.email_alerter = None
         try:
          self.threat_intel = ThreatIntelligence()
         except Exception as e:
          print(f"Threat intel init failed: {e}")
          self.threat_intel = None
-        print("✅ Wazuh Integration Ready")
+        print(" Wazuh Integration Ready")
     def send_to_wazuh_socket(self, alert):
      """Send alert directly to Wazuh socket"""
      try:
@@ -143,7 +143,7 @@ class WazuhIntegration:
         reset = '\033[0m'
         
         print(f"\n{color}{'='*60}")
-        print(f"🚨 NEURAL IDS ALERT - {alert['severity']}")
+        print(f" NEURAL IDS ALERT - {alert['severity']}")
         print(f"{'='*60}")
         print(f"Attack Type : {alert['predicted_attack']}")
         print(f"Confidence  : {alert['confidence']}%")
