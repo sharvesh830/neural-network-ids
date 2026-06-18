@@ -18,10 +18,10 @@ if __name__ == "__main__":
     
     try:
         results = main()
-        print("\n✅ Training completed successfully!")
+        print("\n Training completed successfully!")
     except KeyboardInterrupt:
-        print("\n⚠️ Training interrupted by user")
+        print("\n Training interrupted by user")
     except Exception as e:
-        print(f"\n❌ Training failed with error: {e}")
+        print(f"\n Training failed with error: {e}")
         import traceback
         traceback.print_exc()
