@@ -3,7 +3,7 @@ import joblib
 import json
 from scripts.models.model_architectures import IDSClassifier, AnomalyAutoEncoder
 
-print("🧠 Loading Neural Network Models...")
+print(" Loading Neural Network Models...")
 
 # Load metadata
 with open('models/model_metadata.json', 'r') as f:
@@ -20,7 +20,7 @@ classifier = IDSClassifier(
 )
 classifier.load_state_dict(torch.load('models/ids_classifier.pth', map_location=device))
 classifier.eval()
-print("✅ Classifier loaded")
+print(" Classifier loaded")
 
 # Load autoencoder
 autoencoder = AnomalyAutoEncoder(
@@ -30,15 +30,15 @@ autoencoder = AnomalyAutoEncoder(
 )
 autoencoder.load_state_dict(torch.load('models/anomaly_detector.pth', map_location=device))
 autoencoder.eval()
-print("✅ Autoencoder loaded")
+print(" Autoencoder loaded")
 
 # Load scalers
 cls_scaler = joblib.load('models/classifier_scaler.pkl')
 ae_scaler = joblib.load('models/autoencoder_scaler.pkl')
 label_encoder = joblib.load('models/label_encoder.pkl')
-print("✅ Scalers loaded")
+print(" Scalers loaded")
 
-print(f"\n🎯 System Ready!")
+print(f"\n System Ready!")
 print(f"Classes: {metadata['num_classes']}")
 print(f"Features: {metadata['input_dim']}")
 print(f"Threshold: {metadata['anomaly_threshold']}")
