@@ -39,24 +39,24 @@ class CICIDSProcessor:
     
     def check_files(self):
         """Check if all required files exist"""
-        print("\n🔍 Checking for dataset files...")
+        print("\n Checking for dataset files...")
         missing_files = []
         
         for file in self.files:
             file_path = self.raw_path / file
             if file_path.exists():
                 size_mb = file_path.stat().st_size / (1024 * 1024)
-                print(f"✅ {file} ({size_mb:.1f} MB)")
+                print(f" {file} ({size_mb:.1f} MB)")
             else:
-                print(f"❌ {file} - NOT FOUND")
+                print(f" {file} - NOT FOUND")
                 missing_files.append(file)
         
         if missing_files:
-            print(f"\n⚠️  Missing {len(missing_files)} files!")
+            print(f"\n  Missing {len(missing_files)} files!")
             print("Please place all files in:", self.raw_path)
             return False
         
-        print(f"\n✅ All {len(self.files)} files found!")
+        print(f"\n All {len(self.files)} files found!")
         return True
     
     def load_single_file(self, filename):
@@ -64,7 +64,7 @@ class CICIDSProcessor:
         file_path = self.raw_path / filename
         
         try:
-            print(f"\n📖 Loading {filename}...")
+            print(f"\n Loading {filename}...")
             
             # Read with different encoding attempts
             for encoding in ['utf-8', 'latin-1', 'cp1252']:
@@ -104,12 +104,12 @@ class CICIDSProcessor:
             return df
             
         except Exception as e:
-            print(f"❌ Error loading {filename}: {e}")
+            print(f" Error loading {filename}: {e}")
             return None
     
     def combine_datasets(self):
         """Combine all CSV files into one dataset"""
-        print("\n🔄 Combining datasets...")
+        print("\n Combining datasets...")
         
         all_dataframes = []
         total_samples = 0
@@ -130,13 +130,13 @@ class CICIDSProcessor:
         if not all_dataframes:
             raise Exception("No valid dataframes loaded!")
         
-        print(f"\n📊 Combining {len(all_dataframes)} datasets...")
+        print(f"\n Combining {len(all_dataframes)} datasets...")
         combined_df = pd.concat(all_dataframes, ignore_index=True, sort=False)
         
-        print(f"✅ Combined dataset shape: {combined_df.shape}")
-        print(f"📈 Total samples: {total_samples:,}")
+        print(f" Combined dataset shape: {combined_df.shape}")
+        print(f" Total samples: {total_samples:,}")
         
-        print(f"\n🎯 Attack Distribution:")
+        print(f"\n Attack Distribution:")
         for attack, count in sorted(attack_summary.items()):
             percentage = (count / total_samples) * 100
             print(f"   {attack}: {count:,} ({percentage:.1f}%)")
@@ -145,7 +145,7 @@ class CICIDSProcessor:
     
     def clean_dataset(self, df):
         """Clean and prepare the dataset"""
-        print(f"\n🧹 Cleaning dataset...")
+        print(f"\n Cleaning dataset...")
         
         original_shape = df.shape
         print(f"Original shape: {original_shape}")
@@ -164,7 +164,7 @@ class CICIDSProcessor:
                 missing_features.append(feature)
         
         if missing_features:
-            print(f"⚠️  Missing features: {missing_features}")
+            print(f"  Missing features: {missing_features}")
             # Try to find similar column names
             print("Available columns:")
             for col in sorted(df.columns):
@@ -181,7 +181,7 @@ class CICIDSProcessor:
             print(f"Dataset size ({len(df):,}) is within limit ({max_samples:,})")
             return df
         
-        print(f"\n🎲 Sampling dataset from {len(df):,} to {max_samples:,} samples...")
+        print(f"\n Sampling dataset from {len(df):,} to {max_samples:,} samples...")
         
         # Separate normal and attack traffic
         normal_df = df[df['Label'] == 'BENIGN'].copy()
@@ -202,7 +202,7 @@ class CICIDSProcessor:
         sampled_df = pd.concat([normal_df, attack_df], ignore_index=True)
         sampled_df = sampled_df.sample(frac=1, random_state=42).reset_index(drop=True)  # Shuffle
         
-        print(f"✅ Sampled dataset shape: {sampled_df.shape}")
+        print(f" Sampled dataset shape: {sampled_df.shape}")
         
         return sampled_df
     
@@ -210,7 +210,7 @@ class CICIDSProcessor:
         """Save the processed dataset"""
         output_path = self.processed_path / 'cicids_combined.csv'
         
-        print(f"\n💾 Saving processed dataset to: {output_path}")
+        print(f"\n Saving processed dataset to: {output_path}")
         df.to_csv(output_path, index=False)
         
         # Save summary
@@ -228,14 +228,14 @@ class CICIDSProcessor:
                 percentage = (count / len(df)) * 100
                 f.write(f"{attack}: {count:,} ({percentage:.1f}%)\n")
         
-        print(f"✅ Dataset saved successfully!")
-        print(f"📄 Summary saved to: {summary_path}")
+        print(f" Dataset saved successfully!")
+        print(f" Summary saved to: {summary_path}")
         
         return output_path
     
     def process_all(self):
         """Complete processing pipeline"""
-        print("🚀 Starting CICIDS2017 dataset processing...")
+        print(" Starting CICIDS2017 dataset processing...")
         
         # Check files
         if not self.check_files():
@@ -254,14 +254,14 @@ class CICIDSProcessor:
             # Save processed dataset
             output_path = self.save_processed_dataset(final_df)
             
-            print(f"\n🎉 Processing complete!")
-            print(f"📁 Output file: {output_path}")
-            print(f"📊 Final dataset: {final_df.shape[0]:,} samples, {final_df.shape[1]} features")
+            print(f"\n Processing complete!")
+            print(f" Output file: {output_path}")
+            print(f" Final dataset: {final_df.shape[0]:,} samples, {final_df.shape[1]} features")
             
             return True
             
         except Exception as e:
-            print(f"\n❌ Processing failed: {e}")
+            print(f"\n Processing failed: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -271,9 +271,9 @@ def main():
     success = processor.process_all()
     
     if success:
-        print("\n✅ Ready for neural network training!")
+        print("\n Ready for neural network training!")
     else:
-        print("\n❌ Please fix the issues and try again.")
+        print("\n Please fix the issues and try again.")
 
 if __name__ == "__main__":
     main()
