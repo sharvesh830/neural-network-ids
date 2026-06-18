@@ -24,7 +24,7 @@ class UbuntuPackager:
         
     def package_models(self):
         """Package all necessary files for Ubuntu deployment"""
-        print("📦 Packaging models for Ubuntu deployment...")
+        print(" Packaging models for Ubuntu deployment...")
         
         # Create subdirectories
         (self.export_path / 'models').mkdir(exist_ok=True)
@@ -41,15 +41,15 @@ class UbuntuPackager:
             'model_metadata.json'
         ]
         
-        print("\n📋 Copying model files:")
+        print("\n Copying model files:")
         for file in model_files:
             src = self.models_path / file
             dst = self.export_path / 'models' / file
             if src.exists():
                 shutil.copy2(src, dst)
-                print(f"  ✅ {file}")
+                print(f"   {file}")
             else:
-                print(f"  ❌ {file} - NOT FOUND")
+                print(f"   {file} - NOT FOUND")
         
         # Create deployment configuration
         deployment_config = {
@@ -122,8 +122,8 @@ classifier = torch.load('models/ids_classifier.pth')
         with open(self.export_path / 'README.md', 'w', encoding='utf-8') as f:
             f.write(readme)
 
-        print("\n✅ Ubuntu deployment package created successfully!")
-        print(f"📁 Export location: {self.export_path}")
+        print("\n Ubuntu deployment package created successfully!")
+        print(f" Export location: {self.export_path}")
 
         return self.export_path
 
