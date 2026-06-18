@@ -85,7 +85,7 @@ class LiveMonitor:
     
      # Infrastructure filter
      if hasattr(self, 'infra_filter'):
-         print(f"\n🛡️  INFRASTRUCTURE FILTER")
+         print(f"\n  INFRASTRUCTURE FILTER")
          print(f"   Excluded IPs  : {len(self.infra_filter.infrastructure_ips)}")
          for ip in sorted(self.infra_filter.infrastructure_ips):
              print(f"      • {ip}")
@@ -93,13 +93,13 @@ class LiveMonitor:
      # Threat intelligence
      if hasattr(self.analyzer, 'threat_intel') and self.analyzer.threat_intel:
          intel_stats = self.analyzer.threat_intel.get_stats()
-         print(f"\n🔍 THREAT INTELLIGENCE")
+         print(f"\n THREAT INTELLIGENCE")
          print(f"   Malicious IPs : {intel_stats.get('malicious_ips', 0)}")
          print(f"   Suspicious IPs: {intel_stats.get('suspicious_ips', 0)}")
     
      # Email alerting
      if self.wazuh.email_alerter:
-         print(f"\n📧 EMAIL ALERTING")
+         print(f"\n EMAIL ALERTING")
          print(f"   Status        : Enabled")
          print(f"   Rate Limit    : {self.wazuh.email_alerter.max_per_hour} emails/hour")
          print(f"   Cooldown      : {self.wazuh.email_alerter.cooldown_minutes} minutes")
@@ -107,7 +107,7 @@ class LiveMonitor:
      # Auto-blocking
      auto_block = self.config.get('auto_block', {})
      if auto_block.get('enabled'):
-         print(f"\n🚫 AUTO-BLOCKING")
+         print(f"\n AUTO-BLOCKING")
          print(f"   Status        : Enabled")
          print(f"   Block Severity: {', '.join(auto_block.get('block_severity', []))}")
          print(f"   Whitelisted   : {len(auto_block.get('whitelist', []))}")
@@ -285,7 +285,7 @@ class LiveMonitor:
             subprocess.run(['sudo', 'iptables', '-A', 'INPUT', '-s', ip, '-j', 'DROP'],
                          check=True, capture_output=True)
             self.stats['ips_blocked'].add(ip)
-            logger.warning(f"🚫 BLOCKED IP: {ip} - Reason: {reason}")
+            logger.warning(f" BLOCKED IP: {ip} - Reason: {reason}")
             
             # Log block
             with open(BASE_PATH / 'logs/blocked_ips.log', 'a') as f:
@@ -297,13 +297,13 @@ class LiveMonitor:
         """Print monitoring statistics"""
         while True:
             time.sleep(30)
-            print(f"\n📊 Monitor Stats [{datetime.now().strftime('%H:%M:%S')}]")
+            print(f"\n Monitor Stats [{datetime.now().strftime('%H:%M:%S')}]")
             print(f"  Total Flows Analyzed: {self.stats['total_flows']}")
             print(f"  Threats Detected: {self.stats['threats_detected']}")
             print(f"  IPs Blocked: {len(self.stats['ips_blocked'])}")
             if self.stats['ips_blocked']:
                 for ip in self.stats['ips_blocked']:
-                    print(f"  🚫 {ip}")
+                    print(f"   {ip}")
     
     def start(self):
         """Start live monitoring"""
@@ -318,8 +318,8 @@ class LiveMonitor:
             stats_thread = threading.Thread(target=self.print_stats, daemon=True)
             stats_thread.start()
             
-            logger.info(f"🔍 Live monitoring started on {self.interface}")
-            logger.info(f"🎯 Monitoring traffic to/from {self.target_ip}")
+            logger.info(f" Live monitoring started on {self.interface}")
+            logger.info(f" Monitoring traffic to/from {self.target_ip}")
             logger.info("Press Ctrl+C to stop\n")
             
             # Start packet capture
@@ -331,10 +331,10 @@ class LiveMonitor:
             )
             
         except PermissionError:
-            logger.error("❌ Permission denied - run with sudo!")
+            logger.error(" Permission denied - run with sudo!")
             logger.info("Try: sudo python live_monitor.py")
         except KeyboardInterrupt:
-            logger.info("\n⚠️ Monitoring stopped by user")
+            logger.info("\n Monitoring stopped by user")
             logger.info(f"Final Stats:")
             logger.info(f"  Total Flows: {self.stats['total_flows']}")
             logger.info(f"  Threats Detected: {self.stats['threats_detected']}")
