@@ -20,7 +20,7 @@ def generate_report():
     with open(BASE_PATH / 'models/model_metadata.json', 'r') as f:
         metadata = json.load(f)
     
-    print("📊 MODEL INFORMATION")
+    print(" MODEL INFORMATION")
     print("-" * 70)
     print(f"Input Features: {metadata['input_dim']}")
     print(f"Attack Classes: {metadata['num_classes']}")
@@ -30,7 +30,7 @@ def generate_report():
         print(f"  {i:2d}. {cls}")
     
     # Analyze alert logs
-    print(f"\n📈 DETECTION STATISTICS")
+    print(f"\n DETECTION STATISTICS")
     print("-" * 70)
     
     alerts_file = BASE_PATH / 'logs/neural_alerts.json'
@@ -86,7 +86,7 @@ def generate_report():
         with open(blocked_file, 'r') as f:
             blocked = f.readlines()
         
-        print(f"\n🚫 BLOCKED IPS")
+        print(f"\n BLOCKED IPS")
         print("-" * 70)
         print(f"Total IPs Blocked: {len(blocked)}")
         if blocked:
@@ -97,15 +97,15 @@ def generate_report():
     # System capabilities
     print(f"\n⚙️  SYSTEM CAPABILITIES")
     print("-" * 70)
-    print("✅ Real-time traffic monitoring")
-    print("✅ Neural network classification (2-stage)")
-    print("✅ Anomaly detection with autoencoder")
-    print("✅ Wazuh SIEM integration")
-    print("✅ Email alert notifications")
-    print("✅ Threat intelligence enrichment")
-    print("✅ Automatic IP blocking")
-    print("✅ Multi-severity classification")
-    print("✅ Rate-limited alerting")
+    print(" Real-time traffic monitoring")
+    print(" Neural network classification (2-stage)")
+    print(" Anomaly detection with autoencoder")
+    print(" Wazuh SIEM integration")
+    print(" Email alert notifications")
+    print(" Threat intelligence enrichment")
+    print(" Automatic IP blocking")
+    print(" Multi-severity classification")
+    print(" Rate-limited alerting")
     
     print("\n" + "="*70)
     print("  Report Complete")
