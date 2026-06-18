@@ -46,7 +46,7 @@ class CompleteIDSTrainer:
         (self.results_path / 'training_history').mkdir(parents=True, exist_ok=True)
         (self.results_path / 'visualizations').mkdir(parents=True, exist_ok=True)
         (self.results_path / 'model_performance').mkdir(parents=True, exist_ok=True)
-        print(f"🚀 IDS Trainer initialized")
+        print(f" IDS Trainer initialized")
         print(f"Device: {self.device}")
         print(f"Data path: {self.data_path}")
         print(f"Model path: {self.model_path}")
@@ -55,7 +55,7 @@ class CompleteIDSTrainer:
         """
         Load and prepare data for training
         """
-        print("\n📖 Loading processed dataset...")
+        print("\n Loading processed dataset...")
         
         # Load combined dataset
         data_file = self.data_path / 'cicids_combined.csv'
@@ -80,15 +80,15 @@ class CompleteIDSTrainer:
         selected_features = self.config.get('features.selected_features')
         available_features = [feat for feat in selected_features if feat in X.columns]
         
-        print(f"\n🎯 Using {len(available_features)} features:")
+        print(f"\n Using {len(available_features)} features:")
         for feat in available_features:
-            print(f"  ✅ {feat}")
+            print(f"   {feat}")
         
         missing_features = [feat for feat in selected_features if feat not in X.columns]
         if missing_features:
-            print(f"\n⚠️ Missing features:")
+            print(f"\n Missing features:")
             for feat in missing_features:
-                print(f"  ❌ {feat}")
+                print(f"   {feat}")
         
         X_selected = X[available_features].copy()
         
@@ -100,7 +100,7 @@ class CompleteIDSTrainer:
         self.classes = self.label_encoder.classes_
         self.num_classes = len(self.classes)
         
-        print(f"\n🏷️ Class encoding:")
+        print(f"\n Class encoding:")
         for i, class_name in enumerate(self.classes):
             print(f"  {i}: {class_name}")
         
@@ -110,7 +110,7 @@ class CompleteIDSTrainer:
         """
         Split data and apply scaling
         """
-        print("\n✂️ Splitting and scaling data...")
+        print("\n Splitting and scaling data...")
         
         # Split data
         X_temp, X_test, y_temp, y_test = train_test_split(
@@ -169,7 +169,7 @@ class CompleteIDSTrainer:
         """
         Create neural network models
         """
-        print("\n🧠 Creating neural network models...")
+        print("\n Creating neural network models...")
         
         # Classifier
         self.classifier = IDSClassifier(
@@ -186,8 +186,8 @@ class CompleteIDSTrainer:
             hidden_layers=self.config.get('models.autoencoder.hidden_layers', [64, 32])
         ).to(self.device)
         
-        print(f"✅ Classifier: {sum(p.numel() for p in self.classifier.parameters()):,} parameters")
-        print(f"✅ Autoencoder: {sum(p.numel() for p in self.autoencoder.parameters()):,} parameters")
+        print(f" Classifier: {sum(p.numel() for p in self.classifier.parameters()):,} parameters")
+        print(f" Autoencoder: {sum(p.numel() for p in self.autoencoder.parameters()):,} parameters")
         
         # Loss functions
         self.classifier_criterion = FocalLoss(
@@ -252,7 +252,7 @@ class CompleteIDSTrainer:
         """
         Train the classifier network
         """
-        print(f"\n🎯 Training Classifier...")
+        print(f"\n Training Classifier...")
         
         num_epochs = self.config.get('models.classifier.epochs', 50)
         best_val_loss = float('inf')
@@ -353,7 +353,7 @@ class CompleteIDSTrainer:
         """
         Train the autoencoder for anomaly detection
         """
-        print(f"\n🔍 Training Autoencoder...")
+        print(f"\n Training Autoencoder...")
         
         num_epochs = self.config.get('models.autoencoder.epochs', 30)
         best_val_loss = float('inf')
@@ -441,7 +441,7 @@ class CompleteIDSTrainer:
         """
         Calculate anomaly detection threshold using normal traffic
         """
-        print("\n📊 Calculating anomaly threshold...")
+        print("\n Calculating anomaly threshold...")
         
         self.autoencoder.eval()
         reconstruction_errors = []
@@ -466,7 +466,7 @@ class CompleteIDSTrainer:
         """
         Evaluate classifier performance
         """
-        print("\n📊 Evaluating Classifier...")
+        print("\n Evaluating Classifier...")
         
         self.classifier.eval()
         y_true = []
@@ -497,7 +497,7 @@ class CompleteIDSTrainer:
             np.array(y_true), np.array(y_pred)
         )
         
-        print(f"\n🎯 Classifier Performance:")
+        print(f"\n Classifier Performance:")
         print(f"  Accuracy: {metrics['accuracy']:.4f}")
         print(f"  Weighted F1: {metrics['weighted_f1']:.4f}")
         print(f"  Detection Rate: {ids_metrics['detection_rate']:.4f}")
@@ -509,7 +509,7 @@ class CompleteIDSTrainer:
         """
         Evaluate autoencoder anomaly detection
         """
-        print("\n🔍 Evaluating Autoencoder...")
+        print("\n Evaluating Autoencoder...")
         
         self.autoencoder.eval()
         y_true_binary = []
@@ -540,7 +540,7 @@ class CompleteIDSTrainer:
         recall = recall_score(y_true_binary, y_pred_binary)
         f1 = f1_score(y_true_binary, y_pred_binary)
         
-        print(f"\n🎯 Autoencoder Performance:")
+        print(f"\n Autoencoder Performance:")
         print(f"  Accuracy: {accuracy:.4f}")
         print(f"  Precision: {precision:.4f}")
         print(f"  Recall (Detection Rate): {recall:.4f}")
@@ -560,7 +560,7 @@ class CompleteIDSTrainer:
         """
         Save trained models and preprocessing objects
         """
-        print("\n💾 Saving trained models...")
+        print("\n Saving trained models...")
         
         # Save model weights
         torch.save(self.classifier.state_dict(), 
@@ -596,13 +596,13 @@ class CompleteIDSTrainer:
         with open(self.model_path / 'final' / 'model_metadata.json', 'w') as f:
             json.dump(metadata, f, indent=2)
         
-        print("✅ Models saved successfully!")
+        print(" Models saved successfully!")
     
     def plot_training_history(self, cls_history, ae_history):
         """
         Plot training curves
         """
-        print("\n📊 Creating training visualizations...")
+        print("\n Creating training visualizations...")
         
         fig, axes = plt.subplots(2, 2, figsize=(15, 10))
         
@@ -639,7 +639,7 @@ class CompleteIDSTrainer:
         plt.savefig(self.results_path / 'visualizations' / 'training_curves.png', dpi=300, bbox_inches='tight')
         plt.close()
         
-        print("✅ Training curves saved!")
+        print(" Training curves saved!")
     
     def train_complete_system(self):
         """
@@ -647,7 +647,7 @@ class CompleteIDSTrainer:
         """
         start_time = time.time()
         
-        print("🚀 Starting Complete Neural Network IDS Training")
+        print(" Starting Complete Neural Network IDS Training")
         print("=" * 60)
         
         # Load and prepare data
@@ -703,12 +703,12 @@ class CompleteIDSTrainer:
         training_time = time.time() - start_time
         
         print("\n" + "="*60)
-        print("🎉 Training Complete!")
-        print(f"⏱️ Total training time: {training_time:.2f} seconds ({training_time/60:.1f} minutes)")
-        print(f"🎯 Classifier Accuracy: {cls_metrics['accuracy']:.1%}")
-        print(f"🔍 Autoencoder F1: {ae_metrics['f1_score']:.1%}")
-        print("📁 Models saved to:", self.model_path / 'final')
-        print("📊 Results saved to:", self.results_path)
+        print(" Training Complete!")
+        print(f" Total training time: {training_time:.2f} seconds ({training_time/60:.1f} minutes)")
+        print(f" Classifier Accuracy: {cls_metrics['accuracy']:.1%}")
+        print(f" Autoencoder F1: {ae_metrics['f1_score']:.1%}")
+        print(" Models saved to:", self.model_path / 'final')
+        print(" Results saved to:", self.results_path)
         print("=" * 60)
         
         return results
