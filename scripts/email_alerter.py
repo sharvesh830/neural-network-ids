@@ -18,7 +18,7 @@ class SmartEmailAlerter:
         self.enabled = self.config.get('enabled', False)
         
         if not self.enabled:
-            print("📧 Email alerts disabled in config")
+            print(" Email alerts disabled in config")
             return
         
         # Rate limiting
@@ -32,7 +32,7 @@ class SmartEmailAlerter:
         self.pending_alerts = []  # For aggregation
         self.last_aggregate_time = datetime.now()
         
-        print(f"✅ Email alerter initialized")
+        print(f" Email alerter initialized")
         print(f"   Rate limit: {self.max_per_hour} emails/hour")
         print(f"   Cooldown: {self.cooldown_minutes} minutes per attack type")
         print(f"   Aggregation window: {self.aggregate_window} minutes")
@@ -62,7 +62,7 @@ class SmartEmailAlerter:
         self.email_history = [ts for ts in self.email_history if ts > one_hour_ago]
         
         if len(self.email_history) >= self.max_per_hour:
-            print(f"⚠️ Email rate limit reached ({self.max_per_hour}/hour)")
+            print(f" Email rate limit reached ({self.max_per_hour}/hour)")
             return False
         
         # Check cooldown for this attack type
@@ -72,7 +72,7 @@ class SmartEmailAlerter:
         
         if last_sent > cooldown_period:
             minutes_ago = (now - last_sent).total_seconds() / 60
-            print(f"⚠️ {attack_type} in cooldown ({minutes_ago:.1f} min ago)")
+            print(f" {attack_type} in cooldown ({minutes_ago:.1f} min ago)")
             return False
         
         return True
@@ -124,9 +124,9 @@ class SmartEmailAlerter:
             
             # Subject
             if len(severe) > 0:
-                msg['Subject'] = f"🚨 {len(severe)} SEVERE THREATS Detected - Neural IDS"
+                msg['Subject'] = f" {len(severe)} SEVERE THREATS Detected - Neural IDS"
             else:
-                msg['Subject'] = f"⚠️ {len(high)} HIGH Threats Detected - Neural IDS"
+                msg['Subject'] = f" {len(high)} HIGH Threats Detected - Neural IDS"
             
             msg['From'] = self.config['sender_email']
             msg['To'] = self.config['recipient_email']
@@ -153,13 +153,13 @@ class SmartEmailAlerter:
             for alert in self.pending_alerts:
                 self.last_alert_time[alert['predicted_attack']] = now
             
-            print(f"📧 Email sent: {len(self.pending_alerts)} alerts aggregated")
+            print(f" Email sent: {len(self.pending_alerts)} alerts aggregated")
             print(f"   SEVERE: {len(severe)}, HIGH: {len(high)}")
             
             return True
             
         except Exception as e:
-            print(f"❌ Email failed: {e}")
+            print(f" Email failed: {e}")
             return False
     
     def _create_html_email(self, alerts):
