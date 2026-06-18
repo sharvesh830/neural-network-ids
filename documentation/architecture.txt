@@ -1,146 +1,174 @@
-NEURAL NETWORK IDS - COMPLETE ARCHITECTURE
-═══════════════════════════════════════════════════════════
+# 🏗️ System Architecture
 
-┌──────────────────────────────────────────────────────────┐
-│                   TRAINING PHASE                         │
-│              (Windows 11 Host Machine)                   │
-├──────────────────────────────────────────────────────────┤
-│  Dataset: CICIDS2017 (800,000 samples)                  │
-│  ├─ 15 Attack Types                                     │
-│  ├─ 18 Network Flow Features                            │
-│  └─ 30.4% Normal / 69.6% Attack                         │
-│                                                           │
-│  Training Pipeline:                                      │
-│  ├─ 1. Data Processing & Feature Engineering            │
-│  ├─ 2. Train Classifier (Focal Loss)                    │
-│  ├─ 3. Train Autoencoder (Normal Traffic Only)          │
-│  ├─ 4. Model Evaluation & Tuning                        │
-│  └─ 5. Export for Deployment                            │
-│                                                           │
-│  Results:                                                │
-│  ├─ Classifier Accuracy: 95.61%                         │
-│  ├─ Detection Rate: 98.13%                              │
-│  ├─ False Positive Rate: 9.40%                          │
-│  └─ Training Time: ~10 minutes                          │
-└──────────────────────────────────────────────────────────┘
-                          ↓
-                  Model Export
-                          ↓
-┌──────────────────────────────────────────────────────────┐
-│                  DEPLOYMENT PHASE                        │
-│              (Ubuntu VM - 192.168.80.128)                │
-├──────────────────────────────────────────────────────────┤
-│                                                           │
-│  ┌────────────────────────────────────────────────────┐  │
-│  │  1. TRAFFIC CAPTURE (Scapy)                       │  │
-│  │     ├─ Monitor interface: ens33                   │  │
-│  │     ├─ Filter: target IP traffic                  │  │
-│  │     └─ Extract network flows                      │  │
-│  └────────────────────────────────────────────────────┘  │
-│                          ↓                                │
-│  ┌────────────────────────────────────────────────────┐  │
-│  │  2. FEATURE EXTRACTION                             │  │
-│  │     ├─ Flow duration, packet counts               │  │
-│  │     ├─ Packet lengths (min, max, mean, std)       │  │
-│  │     ├─ Bytes/s, Packets/s                         │  │
-│  │     └─ Inter-arrival times (IAT)                  │  │
-│  └────────────────────────────────────────────────────┘  │
-│                          ↓                                │
-│  ┌────────────────────────────────────────────────────┐  │
-│  │  3. NEURAL NETWORK ANALYSIS                        │  │
-│  │                                                     │  │
-│  │  Stage 1: Classifier                               │  │
-│  │  ├─ Input: 18 features                            │  │
-│  │  ├─ Hidden: [128, 64, 32]                         │  │
-│  │  ├─ Output: 15 classes                            │  │
-│  │  └─ Result: Attack type + confidence              │  │
-│  │                                                     │  │
-│  │  Stage 2: Autoencoder                              │  │
-│  │  ├─ Encoder: [64, 32] → 32                        │  │
-│  │  ├─ Decoder: 32 → [32, 64] → 18                   │  │
-│  │  ├─ Reconstruction error vs threshold             │  │
-│  │  └─ Result: Anomaly detection                     │  │
-│  └────────────────────────────────────────────────────┘  │
-│                          ↓                                │
-│  ┌────────────────────────────────────────────────────┐  │
-│  │  4. THREAT INTELLIGENCE ENRICHMENT                 │  │
-│  │     ├─ Check IP reputation                         │  │
-│  │     ├─ Query threat feeds                          │  │
-│  │     ├─ Custom blacklist lookup                     │  │
-│  │     └─ Severity boost if malicious IP             │  │
-│  └────────────────────────────────────────────────────┘  │
-│                          ↓                                │
-│  ┌────────────────────────────────────────────────────┐  │
-│  │  5. MULTI-CHANNEL ALERTING                         │  │
-│  │                                                     │  │
-│  │  Console Alerts                                    │  │
-│  │  ├─ Color-coded by severity                       │  │
-│  │  ├─ Real-time display                             │  │
-│  │  └─ Full attack details                           │  │
-│  │                                                     │  │
-│  │  Syslog Integration                                │  │
-│  │  ├─ logger command                                 │  │
-│  │  ├─ facility: local0.alert                        │  │
-│  │  └─ Wazuh monitors /var/log/syslog                │  │
-│  │                                                     │  │
-│  │  Wazuh SIEM                                        │  │
-│  │  ├─ Custom rules (100100-100112)                  │  │
-│  │  ├─ Alert enrichment                              │  │
-│  │  ├─ Dashboard visualization                       │  │
-│  │  └─ Alert correlation                             │  │
-│  │                                                     │  │
-│  │  Email Alerts (Smart)                              │  │
-│  │  ├─ Rate limit: 5/hour                            │  │
-│  │  ├─ Cooldown: 15 min/attack type                  │  │
-│  │  ├─ Aggregation: 5-min window                     │  │
-│  │  ├─ Severity filter: HIGH/SEVERE only             │  │
-│  │  └─ Professional HTML format                      │  │
-│  └────────────────────────────────────────────────────┘  │
-│                          ↓                                │
-│  ┌────────────────────────────────────────────────────┐  │
-│  │  6. AUTOMATED RESPONSE                              │  │
-│  │     ├─ SEVERE threats → Auto block IP              │  │
-│  │     ├─ iptables -A INPUT -s <IP> -j DROP           │  │
-│  │     ├─ Whitelist protection                        │  │
-│  │     └─ Block logging                               │  │
-│  └────────────────────────────────────────────────────┘  │
-└──────────────────────────────────────────────────────────┘
-           ↑                                ↑
-           │                                │
-    ┌──────────────┐                ┌──────────────┐
-    │  Kali Linux  │                │ Windows 10   │
-    │  (Attacker)  │  ──attacks──>  │  (Target)    │
-    │ .80.132      │                │  .80.130     │
-    └──────────────┘                └──────────────┘
+```mermaid
+flowchart TB
 
+subgraph TRAIN["🖥️ Training Phase (Windows 11 Host)"]
 
-DATA FLOW EXAMPLE
-═════════════════
+A[CICIDS2017 Dataset<br/>800,000 Samples<br/>15 Attack Types<br/>18 Features]
 
-1. Kali launches DDoS → Windows 10 (:80)
-2. Ubuntu captures packets on ens33
-3. Extracts: 10000 packets/s, 5MB/s, IAT=0.001
-4. Neural Network:
-   ├─ Classifier: 99.8% confidence → DDoS
-   └─ Autoencoder: error=0.45 > threshold=0.33 → Anomaly
-5. Threat Intel: IP 192.168.80.132 in blacklist
-   └─ Severity: MEDIUM → SEVERE (boosted)
-6. Alerts:
-   ├─ Console: Red SEVERE alert displayed
-   ├─ Syslog: "NEURAL_IDS_ALERT severity=SEVERE..."
-   ├─ Wazuh: Rule 100101 triggered (level 15)
-   └─ Email: Sent immediately (SEVERE)
-7. Response: iptables blocks 192.168.80.132
-8. Wazuh Dashboard: Alert appears with full context
+B[Data Processing &<br/>Feature Engineering]
 
+C[Train Classifier<br/>Focal Loss]
 
-PERFORMANCE METRICS
-═══════════════════
+D[Train Autoencoder<br/>Normal Traffic Only]
 
-Detection Latency: <100ms per flow
-Throughput: >1000 flows/second
-Memory Usage: ~2GB
-CPU Usage: ~25% (4-core system)
-Alert Rate: 10-50 alerts/minute under attack
-Email Rate: Max 5/hour (rate limited)
-Block Time: <1 second from detection
+E[Model Evaluation<br/>& Hyperparameter Tuning]
+
+F[Export Deployment Package]
+
+A --> B --> C --> D --> E --> F
+
+R[Results<br/>Accuracy: 95.61%<br/>Detection Rate: 98.13%<br/>False Positive Rate: 9.40%]
+end
+
+F --> G
+
+subgraph DEPLOY["🐧 Deployment Phase (Ubuntu IDS)"]
+
+G[Traffic Capture<br/>Scapy<br/>Interface: ens33]
+
+H[Feature Extraction<br/>18 Flow Features]
+
+I[Neural Network Analysis]
+
+J[Threat Intelligence<br/>IP Reputation<br/>Threat Feeds]
+
+K[Multi-Channel Alerting]
+
+L[Automated Response<br/>IP Blocking]
+
+G --> H --> I --> J --> K --> L
+
+end
+
+subgraph MODEL["🧠 Dual Detection Engine"]
+
+M1[Classifier<br/>18 → 128 → 64 → 32 → 15<br/>Attack Classification]
+
+M2[Autoencoder<br/>18 → 64 → 32 → 32<br/>Anomaly Detection]
+
+I --> M1
+I --> M2
+
+end
+
+subgraph ALERTS["🚨 Alert Channels"]
+
+A1[Console Alerts]
+
+A2[Syslog]
+
+A3[Wazuh SIEM]
+
+A4[Email Alerts]
+
+K --> A1
+K --> A2
+K --> A3
+K --> A4
+
+end
+
+subgraph LAB["🧪 Attack Lab"]
+
+AT[Kali Linux<br/>Attacker<br/>192.168.80.132]
+
+TG[Windows 10<br/>Target<br/>192.168.80.130]
+
+AT -->|Attack Traffic| TG
+AT -->|Observed by IDS| G
+
+end
+```
+
+---
+
+# 🔄 Detection Workflow
+
+```mermaid
+flowchart LR
+
+A[Attack Traffic] --> B[Packet Capture]
+
+B --> C[Feature Extraction]
+
+C --> D[Classifier]
+
+C --> E[Autoencoder]
+
+D --> F[Attack Type + Confidence]
+
+E --> G[Anomaly Score]
+
+F --> H[Threat Intelligence]
+
+G --> H
+
+H --> I[Severity Calculation]
+
+I --> J[Generate Alerts]
+
+J --> K[Wazuh SIEM]
+
+J --> L[Email Alerts]
+
+J --> M[Console Alerts]
+
+I --> N{Severity = SEVERE?}
+
+N -->|Yes| O[Auto Block IP]
+
+N -->|No| P[Monitor]
+```
+
+---
+
+# 📊 Performance Metrics
+
+| Metric              | Value           |
+| ------------------- | --------------- |
+| Detection Accuracy  | 95.61%          |
+| Detection Rate      | 98.13%          |
+| False Positive Rate | 9.40%           |
+| Detection Latency   | <100 ms         |
+| Throughput          | >1000 flows/sec |
+| Memory Usage        | ~2 GB           |
+| CPU Usage           | ~25%            |
+| Email Rate Limit    | 5/hour          |
+| Auto Block Time     | <1 second       |
+
+---
+
+# 🎯 End-to-End Data Flow
+
+```text
+Kali Linux Attack
+        │
+        ▼
+Windows Target System
+        │
+        ▼
+Ubuntu IDS Packet Capture
+        │
+        ▼
+Flow Feature Extraction
+        │
+        ▼
+Classifier + Autoencoder
+        │
+        ▼
+Threat Intelligence Enrichment
+        │
+        ▼
+Severity Assessment
+        │
+        ▼
+┌───────────────┬──────────────┬───────────────┐
+│ Console Alert │ Wazuh SIEM  │ Email Alert   │
+└───────────────┴──────────────┴───────────────┘
+        │
+        ▼
+Automatic IP Blocking
+```
+
