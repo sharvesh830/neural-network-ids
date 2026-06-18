@@ -69,7 +69,7 @@ class NeuralAnalyzer:
         self.ae_scaler = joblib.load(self.base_path / 'models/autoencoder_scaler.pkl')
         self.label_encoder = joblib.load(self.base_path / 'models/label_encoder.pkl')
         
-        print(f"✅ Neural Analyzer Ready: {self.num_classes} classes, {self.input_dim} features")
+        print(f" Neural Analyzer Ready: {self.num_classes} classes, {self.input_dim} features")
     
     def analyze_flow(self, flow_features):
         try:
@@ -130,7 +130,7 @@ if __name__ == "__main__":
     test_features['Total Backward Packets'] = 5
     
     result = analyzer.analyze_flow(test_features)
-    print(f"\n🧪 Test Analysis:")
+    print(f"\n Test Analysis:")
     print(f"Attack: {result['predicted_attack']}")
     print(f"Confidence: {result['confidence']}%")
     print(f"Severity: {result['severity']}")
