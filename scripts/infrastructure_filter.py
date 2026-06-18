@@ -67,5 +67,5 @@ if __name__ == "__main__":
     
     for src, dst, expected in test_cases:
         result = filter.should_analyze(src, dst)
-        status = "✅" if result == expected else "❌"
+        status = "" if result == expected else ""
         print(f"{status} {src} → {dst}: Analyze={result} (Expected={expected})")
