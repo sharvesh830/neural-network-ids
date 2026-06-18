@@ -42,11 +42,11 @@ class ThreatIntelligence:
         
         if self.enabled:
             self._load_threat_feeds()
-            print("✅ Threat Intelligence initialized")
+            print(" Threat Intelligence initialized")
             print(f"   Malicious IPs: {len(self.malicious_ips)}")
             print(f"   Suspicious IPs: {len(self.suspicious_ips)}")
         else:
-            print("📊 Threat Intelligence disabled in config")
+            print(" Threat Intelligence disabled in config")
     
     def _load_threat_feeds(self):
         """Load threat intelligence from multiple sources"""
@@ -97,14 +97,14 @@ class ThreatIntelligence:
                         'data': response.text
                     }, f)
                 
-                print(f"✅ Updated feed: {source_name}")
+                print(f" Updated feed: {source_name}")
             else:
-                print(f"⚠️ Failed to fetch {source_name}: HTTP {response.status_code}")
+                print(f" Failed to fetch {source_name}: HTTP {response.status_code}")
         
         except requests.exceptions.Timeout:
-            print(f"⚠️ Timeout fetching {source_name}")
+            print(f" Timeout fetching {source_name}")
         except Exception as e:
-            print(f"⚠️ Error fetching {source_name}: {e}")
+            print(f" Error fetching {source_name}: {e}")
     
     def _process_ip_list(self, content, source_name):
         """Process plain text IP list"""
