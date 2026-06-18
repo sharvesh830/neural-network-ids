@@ -11,7 +11,7 @@ print("="*70)
 analyzer = NeuralAnalyzer()
 wazuh = WazuhIntegration()
 
-print("\n🔍 Monitoring started... (Press Ctrl+C to stop)\n")
+print("\n Monitoring started... (Press Ctrl+C to stop)\n")
 
 # Simulate traffic analysis
 test_scenarios = [
@@ -21,7 +21,7 @@ test_scenarios = [
 ]
 
 for scenario in test_scenarios:
-    print(f"\n📊 Testing: {scenario['name']}")
+    print(f"\n Testing: {scenario['name']}")
     
     # Create full feature vector
     features = {feat: 0.0 for feat in analyzer.features}
@@ -35,4 +35,4 @@ for scenario in test_scenarios:
     
     time.sleep(2)
 
-print("\n✅ Test complete!")
+print("\n Test complete!")
